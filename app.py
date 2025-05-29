@@ -159,8 +159,8 @@ def get_hourly_forecast():
 
     return jsonify({
         'labels': hourly_labels,
-        'temps': hourly_temps
-        'humids': hourly_humids
+        'temps': hourly_temps,
+        'humids': hourly_humids,
     })
 
 def get_weather(city):
