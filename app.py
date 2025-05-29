@@ -167,19 +167,33 @@ def get_weather(city):
     url = f'https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric&lang=kr'
     response = requests.get(url)
     data = response.json()
+
     if data.get('cod') != 200:
         return {
             'city': city,
-            'error': f"'{city}'의 날씨를 찾을 수 없습니다. (영문 도시명은 첫 글자를 대문자로 입력하세요. 예: Busan)"
+            'error': f"'{city}'의 날씨를 찾을 수 없습니다. (영문 도시명은 첫 글자를 대문자로 입력하세요. 예: Busan)",
+            'delta_temp': 0,          # 기본값 포함
+            'delta_humidity': 0       # 기본값 포함
         }
     else:
+        # 🔽 현재 기온/습도
+        current_temp = data['main']['temp']
+        current_humidity = data['main']['humidity']
+
+        # 🔽 이전 데이터와 비교한 변화량 (직접 계산하거나 0으로 초기화)
+        # => 나중에 데이터 저장 기능과 함께 실제로 변화량 계산 가능
+        delta_temp = 0
+        delta_humidity = 0
+
         return {
             'city': city,
-            'temperature': data['main']['temp'],
+            'temperature': current_temp,
             'description': data['weather'][0]['description'],
-            'humidity': data['main']['humidity'],
+            'humidity': current_humidity,
             'rain': data.get('rain', {}).get('1h', 0),
-            'error': None
+            'error': None,
+            'delta_temp': delta_temp,              # 🔁 변화량 추가
+            'delta_humidity': delta_humidity       # 🔁 변화량 추가
         }
 
 def get_forecast(city, target_weekday, target_time):
